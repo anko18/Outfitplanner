@@ -7,7 +7,7 @@ import (
 )
 
 func AddOutfit(outfit models.Outfit) error {
-	var db = database.GetDB()
+	db := database.GetDB()
 	sqlAddOutfit := `INSERT INTO outfits (
 id,
 items,

@@ -33,6 +33,11 @@ func CreateNewOutfit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if outfit.Items == "" || outfit.Type == "" || outfit.Season == "" {
+		http.Error(w, "Empty fields are not allowed!", http.StatusInternalServerError)
+		return
+	}
+
 	outfit.ID, err = uuid.NewUUID() //generate id for the new outfit
 
 	if err != nil {

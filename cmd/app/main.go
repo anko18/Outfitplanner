@@ -33,13 +33,13 @@ func main() {
 	r.Get("/", transport.GetAllOutfits)
 	r.Post("/", transport.CreateNewOutfit)
 	r.Delete("/{id}", transport.DeleteOutfitById)
-	/*r.Put("/{id}", UpdateOutfitById)
-
+	/*r.Put("/{id}", UpdateOutfitById) */
 
 	r.Route("/items", func(r chi.Router) {
-		r.Put("/{id}", UpdateItemById)
-		r.Get("/", GetAllItems)
-	}) */
+		r.Get("/{id}", transport.GetItem)
+		r.Get("/", transport.GetAllItems)
+		r.Post("/", transport.CreateItem)
+	})
 
 	http.ListenAndServe(":3000", r)
 }
