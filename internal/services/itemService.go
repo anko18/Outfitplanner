@@ -41,8 +41,7 @@ func GetItemByID(id string) (models.Item, error) {
 	db := database.GetDB()
 	var item models.Item
 
-	row := db.QueryRow("SELECT * from items WHERE id == ?", id)
-
+	row := db.QueryRow("SELECT * FROM items WHERE id=$1", id)
 	err := row.Scan(&item.ID, &item.Name, &item.Color, &item.Print, &item.Firm)
 
 	if err != nil {

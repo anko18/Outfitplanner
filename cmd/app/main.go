@@ -36,8 +36,8 @@ func main() {
 	/*r.Put("/{id}", UpdateOutfitById) */
 
 	r.Route("/items", func(r chi.Router) {
-		r.Get("/{id}", transport.GetItem)
 		r.Get("/", transport.GetAllItems)
+		r.Get("/{id}", transport.GetItem)
 		r.Post("/", transport.CreateItem)
 	})
 

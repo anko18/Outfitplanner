@@ -4,7 +4,15 @@ import (
 	"Outfitplanner/internal/database"
 	"Outfitplanner/internal/models"
 	"github.com/google/uuid"
+	"strings"
 )
+
+type OutfitWrapper struct {
+	ID     uuid.UUID
+	Items  []*models.Item
+	Season string
+	Type   string
+}
 
 func AddOutfit(outfit models.Outfit) error {
 	db := database.GetDB()
@@ -28,9 +36,30 @@ type
 	return nil
 }
 
-func ListOutfits() ([]*models.Outfit, error) {
+func wrapOutfit(outfit models.Outfit) (OutfitWrapper, error) {
+	var wrapped OutfitWrapper
+
+	itemsIDs := strings.Split(outfit.Items, ",")
+
+	for _, v := range itemsIDs {
+		item, err := GetItemByID(v)
+
+		if err != nil {
+			return wrapped, err
+		}
+
+		wrapped.Items = append(wrapped.Items, &item)
+	}
+	wrapped.ID = outfit.ID
+	wrapped.Type = outfit.Type
+	wrapped.Season = outfit.Season
+
+	return wrapped, nil
+}
+
+func ListOutfits() ([]*OutfitWrapper, error) {
 	db := database.GetDB()
-	allOutfits := []*models.Outfit{}
+	allOutfits := []*OutfitWrapper{}
 	rows, err := db.Query("SELECT * FROM outfits")
 
 	if err != nil {
@@ -51,7 +80,13 @@ func ListOutfits() ([]*models.Outfit, error) {
 		if err != nil {
 			return nil, err
 		}
-		allOutfits = append(allOutfits, &outfit) //add the outfit to the list
+
+		wrapped, err2 := wrapOutfit(outfit)
+
+		if err2 != nil {
+			return nil, err2
+		}
+		allOutfits = append(allOutfits, &wrapped) //add the outfit to the list
 	}
 
 	return allOutfits, nil
